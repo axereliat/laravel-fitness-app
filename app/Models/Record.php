@@ -18,4 +18,9 @@ class Record extends Model
     {
         return $this->belongsTo(DailyActivity::class);
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
