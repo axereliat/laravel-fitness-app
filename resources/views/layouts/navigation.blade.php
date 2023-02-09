@@ -17,8 +17,13 @@
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('record.index')" :active="request()->routeIs('record.index')">
+                    <x-nav-link :href="route('records.index')" :active="request()->routeIs('record.index')">
                         {{ __('List Records') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('records.create')" :active="request()->routeIs('record.create')">
+                        {{ __('Add Record') }}
                     </x-nav-link>
                 </div>
             </div>

@@ -24,8 +24,10 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/records', [RecordController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('record.index');
+    ->middleware(['auth', 'verified'])->name('records.index');
+
+Route::get('/records/create', [RecordController::class, 'create'])
+    ->middleware(['auth', 'verified'])->name('records.create');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
