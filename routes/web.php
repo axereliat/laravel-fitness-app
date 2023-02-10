@@ -23,11 +23,20 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/records', [RecordController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('records.index');
+Route::group(['middleware' => ['auth']], function () {
 
-Route::get('/records/create', [RecordController::class, 'create'])
-    ->middleware(['auth', 'verified'])->name('records.create');
+    Route::get('/records/{record}/edit', [RecordController::class, 'edit'])->name('records.edit');
+
+    Route::put('/records/{record}', [RecordController::class, 'update'])->name('records.update');
+
+    Route::delete('/records/{record}', [RecordController::class, 'destroy'])->name('records.destroy');
+
+    Route::get('/records', [RecordController::class, 'index'])->name('records.index');
+
+    Route::get('/records/create', [RecordController::class, 'create'])->name('records.create');
+
+    Route::post('/records/create', [RecordController::class, 'store']);
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

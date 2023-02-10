@@ -6,14 +6,26 @@
     </x-slot>
 
     <div class="py-12">
+        <x-success-message/>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     @foreach($records as $record)
                         <div>
-                            <h3>{{ $record->name }}</h3>
+                            <h3>{{ $record->daily_activity_name }}</h3>
                             <p>SETS: {{ $record->sets }}</p>
                             <p>REPS: {{ $record->reps }}</p>
+                            <x-secondary-button>
+                                <a href="{{ route('records.edit', $record->id) }}">
+                                    Edit
+                                </a>
+                            </x-secondary-button>
+                            <form method="post" onsubmit="confirm('Are you sure?')"
+                                  action="{{ route('records.destroy', $record->id) }}">
+                                @csrf
+                                @method('DELETE')
+                                <x-secondary-button type="submit">Delete</x-secondary-button>
+                            </form>
                         </div>
                         <br/>
                         <hr/>
