@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DailyActivityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecordController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,18 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/records/create', [RecordController::class, 'create'])->name('records.create');
 
     Route::post('/records/create', [RecordController::class, 'store']);
+
+    Route::get('/activities', [DailyActivityController::class, 'index'])->name('daily-activity.index');
+
+    Route::get('/activities/create', [DailyActivityController::class, 'create'])->name('daily-activity.create');
+
+    Route::post('/activities/create', [DailyActivityController::class, 'store'])->name('daily-activity.store');
+
+    Route::get('/activities/{activity}', [DailyActivityController::class, 'edit'])->name('daily-activity.edit');
+
+    Route::put('/activities/{activity}', [DailyActivityController::class, 'update'])->name('daily-activity.update');
+
+    Route::delete('/activities/{activity}', [DailyActivityController::class, 'destroy'])->name('daily-activity.destroy');
 });
 
 Route::middleware('auth')->group(function () {

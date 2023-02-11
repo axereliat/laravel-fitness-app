@@ -26,6 +26,16 @@
                         {{ __('Add Record') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('daily-activity.index')" :active="request()->routeIs('daily-activity.index')">
+                        {{ __('List Activities') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('daily-activity.create')" :active="request()->routeIs('daily-activity.create')">
+                        {{ __('Add Activity') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
