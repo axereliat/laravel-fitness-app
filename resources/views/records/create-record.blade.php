@@ -12,6 +12,11 @@
                     <form method="post" action="{{ route('records.create') }}">
                         @csrf
                         @include('components.partials.record-form-fields')
+                        <x-secondary-button>
+                            <a href="{{ route('records.index') }}">
+                                Cancel
+                            </a>
+                        </x-secondary-button>
                         <x-primary-button>Edit</x-primary-button>
                     </form>
                 </div>
