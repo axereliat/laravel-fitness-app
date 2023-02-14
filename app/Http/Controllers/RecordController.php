@@ -5,16 +5,36 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RecordPostRequest;
 use App\Models\DailyActivity;
 use App\Models\Record;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\Exception;
 
 class RecordController extends Controller
 {
     public function index(Request $request)
     {
+
         $activities = DailyActivity::all();
+
+        $startDate = null;
+        if ($request->query('startDate')) {
+            try {
+                $startDate = Carbon::parse($request->query('startDate'))->startOfDay();
+            } catch (Exception $ex) {
+                //
+            }
+        }
+        $endDate = null;
+        if ($request->query('endDate')) {
+            try {
+                $endDate = Carbon::parse($request->query('endDate'))->endOfDay();
+            } catch (Exception $ex) {
+                //
+            }
+        }
 
         $records = Record::query()
             ->join('daily_activities', 'daily_activity_id', '=', 'daily_activities.id')
@@ -23,11 +43,11 @@ class RecordController extends Controller
             ->when($request->query('activity'), function (Builder $builder) use ($request) {
                 $builder->where('daily_activity_id', $request->query('activity'));
             })
-            ->when($request->query('startDate'), function (Builder $builder) use ($request) {
-                $builder->where('records.created_at', '>', $request->query('startDate'));
+            ->when($startDate, function (Builder $builder) use ($startDate) {
+                $builder->where('records.created_at', '>', $startDate);
             })
-            ->when($request->query('endDate'), function (Builder $builder) use ($request) {
-                $builder->where('records.created_at', '<', $request->query('endDate'));
+            ->when($endDate, function (Builder $builder) use ($endDate) {
+                $builder->where('records.created_at', '<', $endDate);
             })
             ->paginate(5);
 
@@ -62,7 +82,8 @@ class RecordController extends Controller
         return redirect('/records')->with('success', 'Your record was successfully updated.');
     }
 
-    public function destroy(Record $record) {
+    public function destroy(Record $record)
+    {
         $record->delete();
 
         return redirect('/records')->with('success', 'Record was successfully deleted.');
