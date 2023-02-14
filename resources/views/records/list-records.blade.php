@@ -23,32 +23,48 @@
                                 </option>
                             @endforeach
                         </select>
+                        <input type="text" name="startDate" class="flatpicker"
+                               value="{{ request()->query->get('startDate') }}" placeholder="start date"/>
+                        <input type="text" name="endDate" class="flatpicker"
+                               value="{{ request()->query->get('endDate') }}" placeholder="end date"/>
+
                         <x-primary-button type="submit">Filter</x-primary-button>
                     </form>
                     <br/>
                     @foreach($records as $record)
-                        <div>
-                            <h3>{{ $record->daily_activity_name }}</h3>
-                            <p>SETS: {{ $record->sets }}</p>
-                            <p>REPS: {{ $record->reps }}</p>
-                            <x-secondary-button>
-                                <a href="{{ route('records.edit', $record->id) }}">
-                                    Edit
-                                </a>
-                            </x-secondary-button>
-                            <form method="post" onsubmit="confirm('Are you sure?')"
-                                  action="{{ route('records.destroy', $record->id) }}">
-                                @csrf
-                                @method('DELETE')
-                                <x-secondary-button type="submit">Delete</x-secondary-button>
-                            </form>
+                        <div class="flex justify-between mb-4 border-b-2">
+                            <div>
+                                <h3>{{ $record->daily_activity_name }}</h3>
+                                <p>SETS: {{ $record->sets }}</p>
+                                <p>REPS: {{ $record->reps }}</p>
+                                <small>{{ $record->created_at }}</small>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <x-secondary-button class="bg-blue-500 text-white">
+                                    <a href="{{ route('records.edit', $record->id) }}">
+                                        Edit
+                                    </a>
+                                </x-secondary-button>
+                                <form method="post" onsubmit="confirm('Are you sure?')"
+                                      action="{{ route('records.destroy', $record->id) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-secondary-button type="submit" class="bg-red-500 text-white">Delete</x-secondary-button>
+                                </form>
+                            </div>
                         </div>
-                        <br/>
-                        <hr/>
-                        <br/>
                     @endforeach
+
+                    @if($records->count() > 0)
+                        {{ $records->links() }}
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+<script>
+    $(function() {
+        $(".flatpicker").flatpickr();
+    })
+</script>

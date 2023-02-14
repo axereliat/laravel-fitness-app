@@ -17,7 +17,7 @@
                                 Cancel
                             </a>
                         </x-secondary-button>
-                        <x-primary-button>Edit</x-primary-button>
+                        <x-primary-button>Create</x-primary-button>
                     </form>
                 </div>
             </div>

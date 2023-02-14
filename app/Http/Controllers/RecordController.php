@@ -6,6 +6,7 @@ use App\Http\Requests\RecordPostRequest;
 use App\Models\DailyActivity;
 use App\Models\Record;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,17 +16,20 @@ class RecordController extends Controller
     {
         $activities = DailyActivity::all();
 
-        $records = DB::table('records')
+        $records = Record::query()
             ->join('daily_activities', 'daily_activity_id', '=', 'daily_activities.id')
             ->select(['records.*', 'daily_activities.name as daily_activity_name'])
             ->where('user_id', '=', Auth::id())
-            ->get();
-
-        $activityId = $request->query('activity') ?? 0;
-
-        if ($activityId > 0) {
-            $records = $records->where('daily_activity_id', $activityId);
-        }
+            ->when($request->query('activity'), function (Builder $builder) use ($request) {
+                $builder->where('daily_activity_id', $request->query('activity'));
+            })
+            ->when($request->query('startDate'), function (Builder $builder) use ($request) {
+                $builder->where('records.created_at', '>', $request->query('startDate'));
+            })
+            ->when($request->query('endDate'), function (Builder $builder) use ($request) {
+                $builder->where('records.created_at', '<', $request->query('endDate'));
+            })
+            ->paginate(5);
 
         return view('records.list-records', ['records' => $records, 'activities' => $activities]);
     }
