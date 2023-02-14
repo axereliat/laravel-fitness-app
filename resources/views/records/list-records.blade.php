@@ -37,7 +37,7 @@
                                 <h3>{{ $record->daily_activity_name }}</h3>
                                 <p>SETS: {{ $record->sets }}</p>
                                 <p>REPS: {{ $record->reps }}</p>
-                                <small>{{ $record->created_at }}</small>
+                                <small>{{ $record->created_at->format('m/d/Y H:i:s') }}</small>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <x-secondary-button class="bg-blue-500 text-white">
@@ -65,6 +65,8 @@
 </x-app-layout>
 <script>
     $(function() {
-        $(".flatpicker").flatpickr();
+        $(".flatpicker").flatpickr({
+            dateFormat: "m/d/Y",
+        });
     })
 </script>

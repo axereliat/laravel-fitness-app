@@ -11,11 +11,21 @@
                 <div class="p-6 text-gray-900">
                     <form method="post" action="{{ route('daily-activity.store') }}">
                         @csrf
-                        <x-input-label for="name" :value="__('Name')" />
-                        <x-text-input id="name" class="block mt-1 w-full"
-                                      type="text" name="name" required />
-                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                        <x-primary-button>Create</x-primary-button>
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <x-text-input id="name" class="block mt-1 w-full"
+                                              type="text" name="name" placeholder="Name" required/>
+                                <x-input-error :messages="$errors->get('name')" class="mt-2"/>
+                            </div>
+                            <div>
+                                <x-primary-button>Create</x-primary-button>
+                                <x-secondary-button>
+                                    <a href="{{ route('daily-activity.index') }}">
+                                        Cancel
+                                    </a>
+                                </x-secondary-button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
