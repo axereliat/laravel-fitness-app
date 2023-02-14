@@ -30,6 +30,7 @@
 
                         <x-primary-button type="submit">Filter</x-primary-button>
                     </form>
+                    <x-search-criteria />
                     <br/>
                     @foreach($records as $record)
                         <div class="flex justify-between mb-4 border-b-2">
