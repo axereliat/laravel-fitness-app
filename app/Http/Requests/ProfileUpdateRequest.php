@@ -19,7 +19,15 @@ class ProfileUpdateRequest extends FormRequest
             'name' => ['string', 'max:255'],
             'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
             'height' => ['required', 'numeric', 'min:150', 'max:220'],
-            'weight' => ['required', 'numeric', 'min:40', 'max:220']
+            'weight' => ['required', 'numeric', 'min:40', 'max:220'],
+            'avatar' => ['nullable', 'image', 'max:1024', 'mimes:jpg,jpeg,png']
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'avatar.max' => 'Avatar max file size is 1MB',
         ];
     }
 }
