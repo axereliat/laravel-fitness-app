@@ -10,27 +10,32 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form>
-                        <label for="activity">Choose activity</label>
-                        <select name="activity" id="activity">
-                            <option value="0">
-                                All
-                            </option>
-                            @foreach($activities as $activity)
-                                <option value="{{ $activity->id }}"
-                                    {{ +request()->query->get('activity') === +$activity->id ? 'selected' : '' }}>
-                                    {{ $activity->name }}
+                    <div class="flex items-center justify-between">
+                        <form>
+                            <label for="activity">Choose activity</label>
+                            <select name="activity" id="activity">
+                                <option value="0">
+                                    All
                                 </option>
-                            @endforeach
-                        </select>
-                        <input type="text" name="startDate" class="flatpicker"
-                               value="{{ request()->query->get('startDate') }}" placeholder="start date"/>
-                        <input type="text" name="endDate" class="flatpicker"
-                               value="{{ request()->query->get('endDate') }}" placeholder="end date"/>
+                                @foreach($activities as $activity)
+                                    <option value="{{ $activity->id }}"
+                                        {{ +request()->query->get('activity') === +$activity->id ? 'selected' : '' }}>
+                                        {{ $activity->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <input type="text" name="startDate" class="flatpicker"
+                                   value="{{ request()->query->get('startDate') }}" placeholder="start date"/>
+                            <input type="text" name="endDate" class="flatpicker"
+                                   value="{{ request()->query->get('endDate') }}" placeholder="end date"/>
 
-                        <x-primary-button type="submit">Filter</x-primary-button>
-                    </form>
-                    <x-search-criteria />
+                            <x-primary-button type="submit">Filter</x-primary-button>
+                        </form>
+                        <x-secondary-button>
+                            <a href="{{ route('records.export', $params) }}">Export</a>
+                        </x-secondary-button>
+                    </div>
+                    <x-search-criteria/>
                     <br/>
                     @foreach($records as $record)
                         <div class="flex justify-between mb-4 border-b-2">
@@ -50,7 +55,8 @@
                                       action="{{ route('records.destroy', $record->id) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <x-secondary-button type="submit" class="bg-red-500 text-white">Delete</x-secondary-button>
+                                    <x-secondary-button type="submit" class="bg-red-500 text-white">Delete
+                                    </x-secondary-button>
                                 </form>
                             </div>
                         </div>
@@ -65,7 +71,7 @@
     </div>
 </x-app-layout>
 <script>
-    $(function() {
+    $(function () {
         $(".flatpicker").flatpickr({
             dateFormat: "m/d/Y",
         });

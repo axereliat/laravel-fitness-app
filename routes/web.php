@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/records/create', [RecordController::class, 'store']);
 
+    Route::get('/records/export', [RecordController::class, 'export'])->name('records.export');
+
     Route::get('/activities', [DailyActivityController::class, 'index'])->name('daily-activity.index');
 
     Route::get('/activities/create', [DailyActivityController::class, 'create'])->name('daily-activity.create');

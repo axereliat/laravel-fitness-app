@@ -16,7 +16,7 @@ class Record extends Model
 
     public function activity_type(): BelongsTo
     {
-        return $this->belongsTo(DailyActivity::class);
+        return $this->belongsTo(DailyActivity::class, 'id');
     }
 
     public function user(): BelongsTo

@@ -5,53 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RecordPostRequest;
 use App\Models\DailyActivity;
 use App\Models\Record;
-use Carbon\Carbon;
-use DB;
-use Illuminate\Database\Eloquent\Builder;
+use App\services\RecordService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PHPUnit\Exception;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class RecordController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, RecordService $recordService)
     {
-
         $activities = DailyActivity::all();
 
-        $startDate = null;
-        if ($request->query('startDate')) {
-            try {
-                $startDate = Carbon::parse($request->query('startDate'))->startOfDay();
-            } catch (Exception $ex) {
-                //
-            }
-        }
-        $endDate = null;
-        if ($request->query('endDate')) {
-            try {
-                $endDate = Carbon::parse($request->query('endDate'))->endOfDay();
-            } catch (Exception $ex) {
-                //
-            }
-        }
+        $params = $request->all() + ['user_id' => Auth::id()];
 
-        $records = Record::query()
-            ->join('daily_activities', 'daily_activity_id', '=', 'daily_activities.id')
-            ->select(['records.*', 'daily_activities.name as daily_activity_name'])
-            ->where('user_id', '=', Auth::id())
-            ->when($request->query('activity'), function (Builder $builder) use ($request) {
-                $builder->where('daily_activity_id', $request->query('activity'));
-            })
-            ->when($startDate, function (Builder $builder) use ($startDate) {
-                $builder->where('records.created_at', '>', $startDate);
-            })
-            ->when($endDate, function (Builder $builder) use ($endDate) {
-                $builder->where('records.created_at', '<', $endDate);
-            })
-            ->paginate(5);
+        $records = $recordService->filter($params)->paginate(5);
 
-        return view('records.list-records', ['records' => $records, 'activities' => $activities]);
+        return view('records.list-records', [
+            'records' => $records,
+            'activities' => $activities,
+            'params' => $params
+        ]);
     }
 
     public function create()
@@ -87,5 +60,29 @@ class RecordController extends Controller
         $record->delete();
 
         return redirect('/records')->with('success', 'Record was successfully deleted.');
+    }
+
+    public function export(Request $request, RecordService $recordService) {
+        $writer = SimpleExcelWriter::streamDownload('records-export.xlsx');
+
+        $params = $request->all() + ['user_id' => Auth::id()];
+
+        $records = $recordService->filter($params)->with('activity_type')->get();
+
+        foreach ($records as $i => $record) {
+            $writer->addRow([
+                'exercise' => $record->daily_activity_name ?? '',
+                'sets' => $record->sets,
+                'reps' => $record->reps
+            ]);
+
+            if ($i % 1000 === 0) {
+                flush(); // Flush the buffer every 1000 rows
+            }
+        }
+
+        $writer->toBrowser();
+
+        return redirect('/records');
     }
 }
